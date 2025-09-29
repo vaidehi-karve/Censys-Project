@@ -1,0 +1,13 @@
+{
+  "api_keys": {
+    "openai": "your-openai-api-key-here",
+    "gemini": "your-google-api-key-here"
+  },
+  "models": {
+    "openai": ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo-preview"],
+    "gemini": ["gemini-pro-latest", "gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
+  },
+  "default_provider": "openai",
+  "default_model": "gpt-3.5-turbo",
+  "default_temperature": 0.3
+}
