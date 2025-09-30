@@ -103,7 +103,71 @@ def get_theme_css(theme):
             }
             
             .stSidebar {
+                background-color: #0e1117 !important;
+            }
+            
+            /* Fix sidebar text color in dark mode */
+            .stSidebar {
+                color: #fafafa !important;
+            }
+            
+            .stSidebar * {
+                color: #fafafa !important;
+            }
+            
+            .stSidebar h1, .stSidebar h2, .stSidebar h3, .stSidebar h4, .stSidebar h5, .stSidebar h6 {
+                color: #fafafa !important;
+            }
+            
+            .stSidebar p, .stSidebar div, .stSidebar span {
+                color: #fafafa !important;
+            }
+            
+            .stSidebar .stMarkdown {
+                color: #fafafa !important;
+            }
+            
+            .stSidebar .stText {
+                color: #fafafa !important;
+            }
+            
+            /* Make sidebar form elements grey background */
+            .stSidebar .stSelectbox > div > div {
                 background-color: #262730 !important;
+                color: #fafafa !important;
+                border: 1px solid #616161 !important;
+            }
+            
+            .stSidebar .stCheckbox > div > div {
+                background-color: #262730 !important;
+                color: #fafafa !important;
+            }
+            
+            .stSidebar .stSlider > div > div > div {
+                background-color: #262730 !important;
+            }
+            
+            .stSidebar .stFileUploader > div {
+                background-color: #262730 !important;
+                color: #fafafa !important;
+                border: 1px solid #616161 !important;
+            }
+            
+            .stSidebar .stTextArea > div > div > textarea {
+                background-color: #262730 !important;
+                color: #fafafa !important;
+                border: 1px solid #616161 !important;
+            }
+            
+            /* Make Settings header bigger */
+            .stSidebar h1 {
+                font-size: 2rem !important;
+                font-weight: bold !important;
+            }
+            
+            /* Info button hover tooltips */
+            .stSidebar div[style*="position: relative"]:hover div[style*="position: absolute"] {
+                opacity: 1 !important;
             }
             
             /* Force dark theme on all elements */
@@ -811,7 +875,8 @@ def main():
             "",
             options=theme_keys,
             index=current_index,
-            key="theme_selector_sidebar"
+            key="theme_selector_sidebar",
+            label_visibility="collapsed"
         )
         
         # Update theme if changed
@@ -838,26 +903,70 @@ def main():
         config = get_global_config()
         setup_secure_config()
         
-        # Provider selection
-        available_providers = config.get_available_providers()
-        if not available_providers:
-            st.caption("⚠️ No API keys - using heuristic")
-            provider = "heuristic"
-        else:
-            provider = st.selectbox(
-                "Provider",
-                available_providers + ["heuristic"],
-                index=0
-            )
+        # Provider selection with info button
+        col1, col2 = st.columns([1, 0.1])
+        with col1:
+            available_providers = config.get_available_providers()
+            if not available_providers:
+                st.caption("⚠️ No API keys - using heuristic")
+                provider = "heuristic"
+            else:
+                provider = st.selectbox(
+                    "Provider",
+                    available_providers + ["heuristic"],
+                    index=0
+                )
+        with col2:
+            st.markdown("""
+            <div style="position: relative; display: inline-block;">
+                <span style="color: #fafafa; cursor: help; font-size: 16px;">❓</span>
+                <div style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); 
+                           background: #262730; color: #fafafa; padding: 8px; border-radius: 4px; 
+                           font-size: 12px; white-space: nowrap; opacity: 0; transition: opacity 0.3s;
+                           pointer-events: none; z-index: 1000; border: 1px solid #616161;">
+                    Choose AI provider (OpenAI, Google) or use heuristic analysis
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
         
-        # Model selection
-        if provider != "heuristic":
-            available_models = config.get_models(provider)
-            model_name = st.selectbox("Model", available_models, index=0)
-        else:
-            model_name = "heuristic"
+        # Model selection with info button
+        col1, col2 = st.columns([1, 0.1])
+        with col1:
+            if provider != "heuristic":
+                available_models = config.get_models(provider)
+                model_name = st.selectbox("Model", available_models, index=0)
+            else:
+                model_name = "heuristic"
+        with col2:
+            if provider != "heuristic":
+                st.markdown("""
+                <div style="position: relative; display: inline-block;">
+                    <span style="color: #fafafa; cursor: help; font-size: 16px;">❓</span>
+                    <div style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); 
+                               background: #262730; color: #fafafa; padding: 8px; border-radius: 4px; 
+                               font-size: 12px; white-space: nowrap; opacity: 0; transition: opacity 0.3s;
+                               pointer-events: none; z-index: 1000; border: 1px solid #616161;">
+                        Select specific AI model (GPT-4, Gemini Pro, etc.)
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
         
-        temperature = st.slider("Temperature", 0.0, 1.0, config.get_default_temperature(), 0.1)
+        # Temperature slider with info button
+        col1, col2 = st.columns([1, 0.1])
+        with col1:
+            temperature = st.slider("Temperature", 0.0, 1.0, config.get_default_temperature(), 0.1)
+        with col2:
+            st.markdown("""
+            <div style="position: relative; display: inline-block;">
+                <span style="color: #fafafa; cursor: help; font-size: 16px;">❓</span>
+                <div style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); 
+                           background: #262730; color: #fafafa; padding: 8px; border-radius: 4px; 
+                           font-size: 12px; white-space: nowrap; opacity: 0; transition: opacity 0.3s;
+                           pointer-events: none; z-index: 1000; border: 1px solid #616161;">
+                    Controls randomness: 0.0 = deterministic, 1.0 = very creative
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
         
         # API status
         api_status = validate_api_keys()

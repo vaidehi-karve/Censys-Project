@@ -86,6 +86,64 @@ streamlit run app.py
 
 The application will be available at `http://localhost:8501`
 
+## 🚀 Deployment Options
+
+### Streamlit Cloud (Recommended)
+
+1. **Push your code to GitHub** (if not already done)
+2. **Go to [share.streamlit.io](https://share.streamlit.io)**
+3. **Connect your GitHub repository**
+4. **Deploy the app** - Streamlit Cloud will automatically detect `app.py`
+5. **Set environment variables** for API keys in the Streamlit Cloud dashboard:
+   - `OPENAI_API_KEY` - Your OpenAI API key
+   - `GOOGLE_API_KEY` - Your Google API key
+
+### Heroku
+
+1. **Create a `Procfile`:**
+   ```
+   web: streamlit run app.py --server.port=$PORT --server.address=0.0.0.0
+   ```
+
+2. **Deploy to Heroku:**
+   ```bash
+   heroku create your-app-name
+   git push heroku main
+   ```
+
+3. **Set environment variables:**
+   ```bash
+   heroku config:set OPENAI_API_KEY=your-key-here
+   heroku config:set GOOGLE_API_KEY=your-key-here
+   ```
+
+### Docker
+
+1. **Create a `Dockerfile`:**
+   ```dockerfile
+   FROM python:3.9-slim
+   WORKDIR /app
+   COPY requirements.txt .
+   RUN pip install -r requirements.txt
+   COPY . .
+   EXPOSE 8501
+   CMD ["streamlit", "run", "app.py", "--server.address", "0.0.0.0"]
+   ```
+
+2. **Build and run:**
+   ```bash
+   docker build -t censys-agent .
+   docker run -p 8501:8501 -e OPENAI_API_KEY=your-key censys-agent
+   ```
+
+### AWS/GCP/Azure
+
+- **AWS**: Use AWS App Runner or Elastic Beanstalk
+- **GCP**: Use Cloud Run or App Engine
+- **Azure**: Use Container Instances or App Service
+
+*Note: Deployment is optional for this project. Local development is sufficient for evaluation.*
+
 ## 🧪 Testing
 
 Run the comprehensive test suite:
